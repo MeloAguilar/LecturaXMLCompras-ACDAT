@@ -43,6 +43,8 @@ double precioSupp = 0;
                 Element compra = (Element) nodoCompra;
                 Compra objCompra = new Compra();
                 NodeList listaTickets = compra.getChildNodes();
+
+
                 for (int j = 0; j < listaTickets.getLength(); j++) {
                     Node nodoticket = listaTickets.item(j);
                     if (nodoticket.getNodeType() == Node.ELEMENT_NODE) {
@@ -62,23 +64,32 @@ double precioSupp = 0;
                                             Node precio = listaPrecios.item(l);
 
                                             if(precio.getNodeType() == Node.ELEMENT_NODE){
-                                                Element precios = (Element) listaPrecios.item(l);
+
                                                 if(precio.getNodeName().equals("precio_unidad")){
+                                                    Element precios = (Element) listaPrecios.item(l);
                                                     precioSupp = Double.parseDouble(precios.getTextContent().replace(",", "."));
                                                     objCompra.aumentarValorTotal(precioSupp);
-                                                }if(precio.getNodeName().equals("unidades")){
-                                                    int p = 1;
-                                                    while(p < Double.parseDouble(precio.getTextContent().replace(",","."))){
-                                                        objCompra.aumentarValorTotal(precioSupp);
-                                                        p++;
-                                                        if(p>=1){
+                                                }
+                                                if(precio.getNodeName().equals("unidades")){
+                                                    Element unidades = (Element) listaPrecios.item(l);
+                                                    double p = 0;
+                                                    while(p < Double.parseDouble(unidades.getTextContent().replace(",", "."))){
 
-                                                            objCompra.aumentarCantidadProductos();
+                                                        if(Double.parseDouble(unidades.getTextContent().replace(",", ".")) < 1){
+
+                                                        } else
+                                                        if(p >= 1){
+
+                                                                objCompra.aumentarValorTotal(precioSupp);
+                                                                objCompra.aumentarCantidadProductos();
+
                                                         }
+                                                        p+=1;
                                                     }
                                                     precioSupp = 0;
                                                 }else if (precio.getNodeName().equals("descuento")){
-                                                    objCompra.sumarDescuento(Double.valueOf(precio.getTextContent().replace(",",".")));
+                                                    Element descuento = (Element) listaPrecios.item(l);
+                                                    objCompra.sumarDescuento(Double.valueOf(descuento.getTextContent().replace(",",".")));
                                                 }
                                             }
                                         }
